@@ -2,7 +2,7 @@
 
 A browser-based starship bridge simulator inspired by Artemis Starship Bridge Simulator and Star Trek. Built with vanilla HTML, CSS, and JavaScript — no build step required.
 
-![WarpMe Tactical View](https://via.placeholder.com/800x400/0a0a12/00f0ff?text=WarpMe+Starship+Simulator)
+![WarpMe Tactical View](WarpMe.png)
 
 ## 🚀 Quick Start
 
