@@ -13,14 +13,11 @@ A browser-based starship bridge simulator inspired by Artemis Starship Bridge Si
 
 ### Running the Simulator
 
-**Option 1: Using npx (if Node.js is installed)**
+**Option 1: Using VS Code Live Preview or Live Server (recommended)**
+1. Install the "Live Preview" (Microsoft) or "Live Server" extension in VS Code
+2. Open [index.html](index.html) and start the live session (via the extension's Start button or context menu)
 
-```bash
-cd WarpMe
-npx serve
-```
-
-Then open http://localhost:3000 in your browser.
+VS Code will open a local URL in your browser.
 
 **Option 2: Using Python**
 ```bash
@@ -29,9 +26,12 @@ python -m http.server 8000
 ```
 Then open http://localhost:8000 in your browser.
 
-**Option 3: Using VS Code Live Server**
-1. Install the "Live Server" extension
-2. Right-click `index.html` and select "Open with Live Server"
+**Option 3 (optional): Using npx serve (requires Node.js)**
+```bash
+cd WarpMe
+npx serve
+```
+Then open http://localhost:3000 in your browser.
 
 ### First Steps
 
@@ -40,6 +40,8 @@ Then open http://localhost:8000 in your browser.
 3. Use the **tab bar** to switch between bridge stations
 4. Friendly ships (green) are nearby, hostiles (red) are at distance
 5. Try scanning unknown contacts and setting waypoints!
+
+The top-right header shows the app title "Warp Me" immediately to the left of the mute control for quick orientation.
 
 ## 🎮 Bridge Stations
 

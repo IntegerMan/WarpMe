@@ -194,8 +194,8 @@ class EngineeringStation {
             });
         });
 
-        // Alert buttons
-        document.querySelectorAll('[data-alert]').forEach(btn => {
+        // Alert buttons (scoped to this station)
+        this.container.querySelectorAll('[data-alert]').forEach(btn => {
             btn.addEventListener('click', () => {
                 gameState.setAlertLevel(btn.dataset.alert);
                 this.updateAlertButtons();
@@ -253,7 +253,7 @@ class EngineeringStation {
     }
 
     updateAlertButtons() {
-        document.querySelectorAll('[data-alert]').forEach(btn => {
+        this.container.querySelectorAll('[data-alert]').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.alert === gameState.alertLevel);
         });
     }

@@ -12,6 +12,8 @@ class HelmStation {
         this.container = null;
         this.canvas = null;
         this.scale = 0.8; // Zoomed in for close navigation
+        this.isHeadingDrag = false;
+        this.isSteerDrag = false;
     }
 
     init(container) {
@@ -226,6 +228,53 @@ class HelmStation {
                     break;
             }
         });
+
+        // Heading wheel drag-to-set
+        const compass = document.getElementById('compass');
+        const stopHeadingDrag = () => {
+            this.isHeadingDrag = false;
+        };
+
+        if (compass) {
+            compass.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                this.isHeadingDrag = true;
+                this.handleCompassPointer(e);
+            });
+
+            compass.addEventListener('pointermove', (e) => {
+                if (!this.isHeadingDrag) return;
+                this.handleCompassPointer(e);
+            });
+
+            compass.addEventListener('pointerup', stopHeadingDrag);
+            compass.addEventListener('pointercancel', stopHeadingDrag);
+            compass.addEventListener('pointerleave', stopHeadingDrag);
+        }
+
+        document.addEventListener('pointerup', stopHeadingDrag);
+
+        // Map drag-to-steer
+        const stopSteerDrag = () => {
+            this.isSteerDrag = false;
+        };
+
+        if (this.canvas) {
+            this.canvas.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                this.isSteerDrag = true;
+                this.handleMapSteer(e);
+            });
+
+            this.canvas.addEventListener('pointermove', (e) => {
+                if (!this.isSteerDrag) return;
+                this.handleMapSteer(e);
+            });
+
+            this.canvas.addEventListener('pointerup', stopSteerDrag);
+            this.canvas.addEventListener('pointercancel', stopSteerDrag);
+            this.canvas.addEventListener('pointerleave', stopSteerDrag);
+        }
     }
 
     setThrottle(percent) {
@@ -321,8 +370,51 @@ class HelmStation {
             centerY: ship.y,
             scale: this.scale,
             showGrid: true,
-            showHUD: true
+            showHUD: true,
+            showWaypointLine: true
         });
+    }
+
+    handleCompassPointer(event) {
+        const compass = document.getElementById('compass');
+        if (!compass) return;
+
+        const rect = compass.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const heading = this.calculateHeadingFromPoint(event.clientX, event.clientY, centerX, centerY);
+        this.setHeading(heading);
+    }
+
+    handleMapSteer(event) {
+        if (!this.canvas) return;
+
+        const rect = this.canvas.getBoundingClientRect();
+        const screenX = event.clientX - rect.left;
+        const screenY = event.clientY - rect.top;
+        const ship = gameState.playerShip;
+
+        const worldPos = renderer.screenToWorld(screenX, screenY, ship.x, ship.y, this.scale);
+        const dx = worldPos.x - ship.x;
+        const dy = worldPos.y - ship.y;
+
+        if (Math.abs(dx) + Math.abs(dy) < 0.001) return; // Ignore clicks exactly on the ship
+
+        const heading = this.calculateHeadingFromVector(dx, dy);
+        this.setHeading(heading);
+    }
+
+    calculateHeadingFromPoint(x, y, centerX, centerY) {
+        const dx = x - centerX;
+        const dy = y - centerY;
+        return this.calculateHeadingFromVector(dx, dy);
+    }
+
+    calculateHeadingFromVector(dx, dy) {
+        let heading = Math.atan2(dy, dx) * 180 / Math.PI;
+        if (heading < 0) heading += 360;
+        return heading;
     }
 
     destroy() {

@@ -13,10 +13,13 @@ class NavigationStation {
         this.canvas = null;
         this.scale = 5; // Very zoomed out for strategic view
         this.isDragging = false;
+        this.dragMoved = false;
         this.viewOffsetX = 0;
         this.viewOffsetY = 0;
         this.lastMouseX = 0;
         this.lastMouseY = 0;
+        this.dragStartX = 0;
+        this.dragStartY = 0;
     }
 
     init(container) {
@@ -146,7 +149,7 @@ class NavigationStation {
 
         // Canvas interactions
         this.canvas.addEventListener('click', (e) => {
-            if (!this.isDragging) {
+            if (!this.isDragging && !this.dragMoved) {
                 this.handleCanvasClick(e);
             }
         });
@@ -154,6 +157,9 @@ class NavigationStation {
         this.canvas.addEventListener('mousedown', (e) => {
             if (e.button === 0) {
                 this.isDragging = true;
+                this.dragMoved = false;
+                this.dragStartX = e.clientX;
+                this.dragStartY = e.clientY;
                 this.lastMouseX = e.clientX;
                 this.lastMouseY = e.clientY;
             }
@@ -167,11 +173,15 @@ class NavigationStation {
                 this.viewOffsetY -= dy * this.scale;
                 this.lastMouseX = e.clientX;
                 this.lastMouseY = e.clientY;
+                if (!this.dragMoved) {
+                    const totalMovement = Math.abs(e.clientX - this.dragStartX) + Math.abs(e.clientY - this.dragStartY);
+                    if (totalMovement > 3) this.dragMoved = true;
+                }
             }
         });
 
         this.canvas.addEventListener('mouseup', () => {
-            setTimeout(() => { this.isDragging = false; }, 50);
+            this.isDragging = false;
         });
 
         this.canvas.addEventListener('mouseleave', () => {

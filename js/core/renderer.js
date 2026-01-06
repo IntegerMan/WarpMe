@@ -291,6 +291,22 @@ class Renderer {
         this.ctx.stroke();
     }
 
+    drawWaypointLine(waypoint, centerX, centerY, scale) {
+        const ship = gameState.playerShip;
+        const start = this.worldToScreen(ship.x, ship.y, centerX, centerY, scale);
+        const end = this.worldToScreen(waypoint.x, waypoint.y, centerX, centerY, scale);
+
+        this.ctx.save();
+        this.ctx.strokeStyle = 'rgba(0, 200, 255, 0.45)';
+        this.ctx.lineWidth = 2;
+        this.ctx.setLineDash([6, 6]);
+        this.ctx.beginPath();
+        this.ctx.moveTo(start.x, start.y);
+        this.ctx.lineTo(end.x, end.y);
+        this.ctx.stroke();
+        this.ctx.restore();
+    }
+
     // Draw waypoint marker
     drawWaypoint(waypoint, centerX, centerY, scale) {
         const pos = this.worldToScreen(waypoint.x, waypoint.y, centerX, centerY, scale);
@@ -383,7 +399,8 @@ class Renderer {
             showHUD = true,
             showRadar = false,
             radarAngle = 0,
-            scanRadius = 0
+            scanRadius = 0,
+            showWaypointLine = false
         } = options;
 
         this.clear();
@@ -403,6 +420,9 @@ class Renderer {
 
         // Draw waypoint
         if (gameState.waypoint) {
+            if (showWaypointLine) {
+                this.drawWaypointLine(gameState.waypoint, centerX, centerY, scale);
+            }
             this.drawWaypoint(gameState.waypoint, centerX, centerY, scale);
         }
 

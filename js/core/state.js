@@ -98,6 +98,8 @@ class GameState {
 
         // Alert level: 'normal', 'yellow', 'red'
         this.alertLevel = 'normal';
+        // Auto-alert permanently disabled (manual control only)
+        this.autoAlertEnabled = false;
 
         // Waypoint for navigation
         this.waypoint = null;
@@ -287,6 +289,15 @@ class GameState {
             this.alertLevel = level;
             this.emit('alertChanged', level);
             this.addCommsMessage('BRIDGE', `${level.toUpperCase()} ALERT`, level === 'red' ? 'alert' : 'info');
+        }
+    }
+
+    // Enable/disable auto alert control by simulation
+    setAutoAlertEnabled(enabled) {
+        if (this.autoAlertEnabled !== enabled) {
+            this.autoAlertEnabled = enabled;
+            this.emit('autoAlertChanged', enabled);
+            this.addCommsMessage('BRIDGE', enabled ? 'Auto alert enabled' : 'Auto alert disabled', 'info');
         }
     }
 

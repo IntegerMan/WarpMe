@@ -316,6 +316,9 @@ class Simulation {
 
     // Check and update alert level
     checkAlertLevel() {
+        // Respect manual override
+        if (!gameState.autoAlertEnabled) return;
+
         const player = gameState.playerShip;
         let nearestHostileDistance = Infinity;
 

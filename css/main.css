@@ -181,6 +181,17 @@ p {
     gap: var(--spacing-md);
 }
 
+.app-title {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: var(--color-primary);
+    text-shadow: var(--glow-primary);
+}
+
 .mute-btn {
     background: transparent;
     border: 1px solid var(--text-dim);

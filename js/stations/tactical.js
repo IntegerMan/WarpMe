@@ -49,6 +49,14 @@ class TacticalStation {
                             <button id="zoom-out" class="btn btn-small">−</button>
                         </div>
                     </div>
+                    <div class="panel">
+                        <h3>ALERT STATUS</h3>
+                        <div class="alert-buttons">
+                            <button class="btn btn-alert ${gameState.alertLevel === 'normal' ? 'active' : ''}" data-alert="normal">NORMAL</button>
+                            <button class="btn btn-alert btn-yellow ${gameState.alertLevel === 'yellow' ? 'active' : ''}" data-alert="yellow">YELLOW</button>
+                            <button class="btn btn-alert btn-red ${gameState.alertLevel === 'red' ? 'active' : ''}" data-alert="red">RED</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="tactical-main">
                     <div class="canvas-container">
@@ -91,6 +99,23 @@ class TacticalStation {
         gameState.on('shipAdded', () => this.updateContactList());
         gameState.on('shipDestroyed', () => this.updateContactList());
         gameState.on('targetChanged', () => this.updateContactList());
+        gameState.on('alertChanged', () => this.updateAlertButtons());
+
+        // Alert buttons
+        this.container.querySelectorAll('[data-alert]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                gameState.setAlertLevel(btn.dataset.alert);
+                this.updateAlertButtons();
+
+                if (btn.dataset.alert === 'red') {
+                    audio.playRedAlert();
+                } else if (btn.dataset.alert === 'yellow') {
+                    audio.playYellowAlert();
+                } else {
+                    audio.playClick();
+                }
+            });
+        });
     }
 
     handleCanvasClick(e) {
@@ -262,6 +287,12 @@ class TacticalStation {
         if (display) {
             display.textContent = `${Math.round(this.scale * 1000)} km`;
         }
+    }
+
+    updateAlertButtons() {
+        this.container.querySelectorAll('[data-alert]').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.alert === gameState.alertLevel);
+        });
     }
 
     update(timestamp) {
